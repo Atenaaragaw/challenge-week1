@@ -1,0 +1,6 @@
+{
+    "python.defaultInterpreterPath": "./.venv/bin/python",
+    "editor.formatOnSave": true,
+    "python.linting.pylintEnabled": true,
+    "notebook.formatOnSave.enabled": true
+}

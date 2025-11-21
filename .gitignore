@@ -1,0 +1,13 @@
+# Python environment
+__pycache__/
+*.pyc
+.venv/
+venv/
+env/
+
+# Data and notebooks outputs
+data/
+*.csv
+*.xlsx
+*.parquet
+*.ipynb_checkpoints/

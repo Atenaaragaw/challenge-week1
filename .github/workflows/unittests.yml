@@ -1,0 +1,53 @@
+name: Python Unit Tests and Linting
+
+# This workflow runs on:
+# 1. Every push to the 'main' branch or your 'task-1' branch
+# 2. Every Pull Request (PR) opened targeting 'main'
+on:
+  push:
+    branches:
+      - main
+      - task-1 # Add your current working branch here
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    # Use Ubuntu for the runner environment
+    runs-on: ubuntu-latest
+    
+    # Define the Python versions you want to test against
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11"]
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+        
+    - name: Install dependencies
+      # Install standard packages and a testing library like pytest
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest flake8
+
+    - name: Lint with Flake8
+      # Flake8 checks for style guide enforcement (PEP 8) and common errors
+      run: |
+        # Stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # Exit with error code 0 if no problems found
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=120 --statistics
+
+    - name: Run Pytest Unit Tests
+      # This assumes you will place your test files (e.g., test_data_prep.py) 
+      # in the 'tests/' directory.
+      run: |
+        pytest

@@ -1,0 +1,10 @@
+pandas
+numpy
+matplotlib
+seaborn
+scipy
+nltk
+scikit-learn
+TA-Lib # Technical Analysis Library
+yfinance # For fetching stock data (PyNance alternative)
+jupyter
