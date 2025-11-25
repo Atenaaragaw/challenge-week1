@@ -55,11 +55,15 @@ def load_local_stock_data(ticker: str, filename: str) -> pd.DataFrame:
         return pd.DataFrame()
 
 def calculate_indicators(df: pd.DataFrame) -> pd.DataFrame:
-    """Calculates key technical indicators using TA-Lib."""
+    """Calculates key technical indicators and daily returns using TA-Lib."""
     if df.empty:
         return df
     
     close_prices = df['Close'].values
+    
+    #  Calculate Daily Simple Returns ---
+    # R_t = (P_t / P_{t-1}) - 1
+    df['Daily_Return'] = df['Close'].pct_change(1)
     
     # 1. Moving Averages (MA)
     df['SMA_20'] = talib.SMA(close_prices, timeperiod=20)
@@ -76,7 +80,7 @@ def calculate_indicators(df: pd.DataFrame) -> pd.DataFrame:
     df['MACD_Signal'] = macdsignal
     df['MACD_Hist'] = macdhist
     
-    # Drop initial NaN rows created by the indicators
+    # Drop initial NaN rows created by the indicators AND the first row from pct_change
     df.dropna(inplace=True) 
     return df
 
