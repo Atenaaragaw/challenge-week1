@@ -1,8 +1,5 @@
+# workflow 
 name: Python Unit Tests and Linting
-
-# This workflow runs on:
-# 1. Every push to the 'main' branch or your 'task-1' branch
-# 2. Every Pull Request (PR) opened targeting 'main'
 on:
   push:
     branches:
@@ -20,7 +17,8 @@ jobs:
     # Define the Python versions you want to test against
     strategy:
       matrix:
-        python-version: ["3.1xx"]
+        # NOTE: Using a specific, valid version (e.g., 3.10) instead of 3.1xx
+        python-version: ["3.10"] 
     steps:
     - name: Checkout Code
       uses: actions/checkout@v4
@@ -31,22 +29,24 @@ jobs:
         python-version: ${{ matrix.python-version }}
         
     - name: Install dependencies
-      # Install standard packages and a testing library like pytest
+      # Install standard packages and necessary libraries from requirements.txt
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install pytest flake8
 
     - name: Lint with Flake8
-      # Flake8 checks for style guide enforcement (PEP 8) and common errors
+      # Flake8 checks for style guide enforcement (PEP 8) and common errors.
+      # The first run stops the build on severe errors (E9, F82).
       run: |
-        # Stop the build if there are Python syntax errors or undefined names
+        # 1. Stop the build if there are Python syntax errors or undefined names
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # Exit with error code 0 if no problems found
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=120 --statistics
+        # 2. Check for complexity and line length; build will fail if issues are found.
+        # Removed --exit-zero so the build will fail if quality issues exist.
+        flake8 . --count --max-complexity=10 --max-line-length=120 --statistics
 
     - name: Run Pytest Unit Tests
-      # This assumes you will place your test files (e.g., test_data_prep.py) 
-      # in the 'tests/' directory.
+      # This runs all files named test_*.py or *_test.py in the project,
+      # typically located in the 'tests/' directory as shown in your file structure.
       run: |
         pytest
